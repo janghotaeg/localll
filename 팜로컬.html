@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>팜로컬 | 스마트팜 체험 + 로컬 농산물 + 지역 관광</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #16a34a;
+      --green-dark: #15803d;
+      --green-light: #dcfce7;
+      --beige: #faf7f2;
+      --cream: #f5f0e8;
+      --amber: #f59e0b;
+      --radius: 1.25rem;
+      --shadow: 0 4px 20px rgba(22, 101, 52, 0.08);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Noto Sans KR", sans-serif;
+      background: var(--beige);
+      color: #1f2937;
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; }
+    .hidden { display: none !important; }
+
+    /* Header */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #d1fae5;
+    }
+    .header-inner {
+      max-width: 72rem; margin: 0 auto;
+      padding: .75rem 1rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo { display: flex; align-items: center; gap: .6rem; }
+    .logo-icon {
+      width: 2.5rem; height: 2.5rem; border-radius: .9rem;
+      background: linear-gradient(135deg, #22c55e, #15803d);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+    }
+    .logo h1 { font-size: 1.15rem; font-weight: 800; color: #166534; }
+    .logo p { font-size: .65rem; color: #6b7280; display: none; }
+    @media (min-width: 640px) { .logo p { display: block; } }
+    .header-tag {
+      display: none; font-size: .75rem; font-weight: 600;
+      background: #ecfdf5; color: #166534;
+      padding: .4rem .9rem; border-radius: 999px;
+    }
+    @media (min-width: 768px) { .header-tag { display: flex; align-items: center; gap: .3rem; } }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+      font-weight: 600; border-radius: 1rem; transition: all .2s;
+    }
+    .btn-primary {
+      background: var(--green); color: #fff;
+      box-shadow: 0 8px 24px rgba(22,163,74,.3);
+    }
+    .btn-primary:hover { background: var(--green-dark); transform: translateY(-1px); }
+    .btn-xl { padding: 1rem 2rem; font-size: 1.05rem; border-radius: 1.25rem; width: 100%; }
+    @media (min-width: 480px) { .btn-xl { width: auto; min-width: 240px; } }
+    .btn-lg { padding: .75rem 1.25rem; font-size: .95rem; }
+    .btn-sm { padding: .45rem .9rem; font-size: .8rem; border-radius: .75rem; }
+    .btn-secondary {
+      background: #fff; color: #166534; border: 2px solid #bbf7d0;
+    }
+    .btn-secondary:hover { background: #ecfdf5; }
+    .btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+    /* Layout */
+    .container { max-width: 72rem; margin: 0 auto; padding: 0 1rem; }
+    .section { padding: 2.5rem 0; }
+    .section-title { font-size: 1.6rem; font-weight: 800; color: #111; }
+    .section-sub { margin-top: .4rem; color: #6b7280; font-size: .95rem; }
+    .card {
+      background: #fff; border-radius: 1.5rem;
+      border: 1px solid #d1fae5;
+      box-shadow: var(--shadow);
+    }
+    .badge {
+      display: inline-block; padding: .2rem .65rem;
+      border-radius: 999px; font-size: .7rem; font-weight: 700;
+      background: #dcfce7; color: #166534;
+    }
+    .badge-warn { background: #fef3c7; color: #b45309; }
+    .badge-done { background: var(--green); color: #fff; }
+
+    /* Hero */
+    .hero {
+      position: relative; overflow: hidden;
+      background: linear-gradient(135deg, #ecfdf5, var(--beige), #fffbeb);
+      padding: 2.5rem 0 2rem;
+    }
+    .hero-grid {
+      display: grid; gap: 2rem; align-items: center;
+    }
+    @media (min-width: 1024px) { .hero-grid { grid-template-columns: 1fr 1fr; } }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: #dcfce7; color: #166534;
+      padding: .4rem 1rem; border-radius: 999px;
+      font-size: .85rem; font-weight: 600; margin-bottom: 1rem;
+    }
+    .hero h2 {
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      font-weight: 800; line-height: 1.3;
+    }
+    .hero h2 span { color: var(--green); }
+    .hero-desc { margin-top: 1rem; color: #4b5563; font-size: 1rem; }
+    .hero-note { margin-top: .5rem; font-size: .85rem; font-weight: 600; color: #166534; }
+
+    /* Hero visual */
+    .hero-visual {
+      position: relative; max-width: 28rem; margin: 0 auto;
+    }
+    .hero-panel {
+      position: relative; border-radius: 2rem;
+      background: rgba(255,255,255,.85);
+      border: 1px solid rgba(255,255,255,.9);
+      padding: 1rem; box-shadow: 0 20px 50px rgba(0,0,0,.1);
+      display: grid; grid-template-columns: 1fr 1fr; gap: .6rem;
+    }
+    .hero-live {
+      grid-column: span 2; display: flex; align-items: center; gap: .75rem;
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      color: #fff; padding: 1rem; border-radius: 1rem;
+    }
+    .hero-mini {
+      background: #ecfdf5; border-radius: 1rem; padding: .75rem;
+      font-size: .75rem; font-weight: 600;
+    }
+    .hero-float {
+      position: absolute; background: #fff; border-radius: 1rem;
+      padding: .5rem .75rem; box-shadow: 0 8px 20px rgba(0,0,0,.1);
+      font-size: 1.4rem;
+    }
+    .hf1 { left: -1rem; top: 25%; }
+    .hf2 { right: -.5rem; bottom: 20%; }
+
+    /* Vote */
+    .vote-box {
+      position: relative; overflow: hidden;
+      border: 2px solid #fcd34d;
+      border-radius: 1.5rem;
+      background: linear-gradient(135deg, #fffbeb, #fff, #ecfdf5);
+      padding: 1.5rem; margin: 1.5rem 0;
+    }
+    .vote-label {
+      display: inline-block; background: #fbbf24; color: #fff;
+      font-size: .7rem; font-weight: 800; padding: .2rem .6rem;
+      border-radius: 999px; margin-bottom: .5rem;
+    }
+    .vote-box h3 { font-size: 1.2rem; font-weight: 800; }
+    .vote-box > p { font-size: .9rem; color: #6b7280; margin-top: .4rem; }
+    .vote-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-top: 1rem;
+    }
+    @media (min-width: 640px) { .vote-grid { grid-template-columns: repeat(4, 1fr); } }
+    .vote-opt {
+      border: 2px solid #e5e7eb; border-radius: 1rem;
+      padding: .9rem; text-align: center; background: #fff;
+      transition: all .2s;
+    }
+    .vote-opt:hover, .vote-opt.selected {
+      border-color: var(--green); background: #ecfdf5;
+      transform: scale(1.02);
+    }
+    .vote-opt span { font-size: 1.5rem; }
+    .vote-opt p { font-size: .75rem; font-weight: 600; margin-top: .3rem; }
+
+    /* Flow */
+    .flow-grid {
+      display: grid; gap: 1rem;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 640px) { .flow-grid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 1024px) { .flow-grid { grid-template-columns: repeat(5, 1fr); } }
+    .flow-card { padding: 1.25rem; position: relative; }
+    .flow-num {
+      position: absolute; top: -.6rem; left: 1rem;
+      width: 1.6rem; height: 1.6rem; border-radius: 50%;
+      background: var(--green); color: #fff;
+      font-size: .75rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .flow-card h4 { margin-top: .5rem; font-size: .9rem; font-weight: 700; }
+    .flow-card p { font-size: .75rem; color: #6b7280; margin-top: .25rem; }
+
+    /* Service nav */
+    .svc-nav {
+      position: sticky; top: 53px; z-index: 90;
+      background: rgba(255,255,255,.95); backdrop-filter: blur(8px);
+      border-bottom: 1px solid #d1fae5; overflow-x: auto;
+    }
+    .svc-nav-inner {
+      max-width: 72rem; margin: 0 auto;
+      display: flex; gap: .25rem; padding: .5rem 1rem; min-width: max-content;
+    }
+    .nav-btn {
+      white-space: nowrap; padding: .55rem 1rem;
+      border-radius: 1rem; font-size: .8rem; font-weight: 600;
+      background: transparent; color: #4b5563;
+    }
+    .nav-btn:hover, .nav-btn.active {
+      background: var(--green); color: #fff;
+    }
+
+    /* Gauge */
+    .gauge { margin-bottom: .75rem; }
+    .gauge-head {
+      display: flex; justify-content: space-between;
+      font-size: .85rem; font-weight: 600; margin-bottom: .3rem;
+    }
+    .gauge-bar {
+      height: .7rem; background: #dcfce7; border-radius: 999px; overflow: hidden;
+    }
+    .gauge-fill {
+      height: 100%; border-radius: 999px;
+      background: linear-gradient(90deg, #4ade80, #16a34a);
+      transition: width .8s ease;
+    }
+    .gauge-fill.orange { background: linear-gradient(90deg, #fdba74, #f97316); }
+    .gauge-fill.blue { background: linear-gradient(90deg, #93c5fd, #3b82f6); }
+    .gauge-fill.amber { background: linear-gradient(90deg, #fcd34d, #d97706); }
+
+    /* Status card */
+    .status-header {
+      background: linear-gradient(90deg, #16a34a, #15803d);
+      color: #fff; padding: 1.5rem; border-radius: 1.5rem 1.5rem 0 0;
+    }
+    .status-body { padding: 1.5rem; }
+    .stat-grid { display: grid; gap: 1rem; }
+    @media (min-width: 768px) { .stat-grid { grid-template-columns: 1fr 1fr; } }
+    .info-pair {
+      background: var(--cream); border-radius: 1rem;
+      padding: 1rem; border: 1px solid #d1fae5;
+    }
+    .info-pair label { font-size: .75rem; color: #6b7280; }
+    .info-pair strong { display: block; font-size: 1.05rem; color: #166534; margin-top: .2rem; }
+
+    /* Farm cards */
+    .farm-grid { display: grid; gap: 1.25rem; }
+    @media (min-width: 768px) { .farm-grid { grid-template-columns: 1fr 1fr; } }
+    .farm-card { padding: 0; overflow: hidden; }
+    .farm-card-head {
+      padding: 1.25rem 1.25rem 0;
+      display: flex; justify-content: space-between; gap: .5rem;
+    }
+    .farm-card-body { padding: 1rem 1.25rem 1.25rem; }
+    .farm-benefit {
+      background: #fffbeb; border-radius: 1rem; padding: .75rem;
+      font-size: .85rem; margin: .75rem 0;
+    }
+    .farm-footer {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: .75rem;
+      border-top: 1px solid #f3f4f6; padding-top: 1rem; margin-top: .5rem;
+    }
+    .price { font-size: 1.1rem; font-weight: 800; color: #166534; }
+
+    /* Map */
+    .map-wrap {
+      display: grid; gap: 1.25rem;
+    }
+    @media (min-width: 1024px) { .map-wrap { grid-template-columns: 3fr 2fr; } }
+    .map-area {
+      position: relative; min-height: 320px;
+      background: linear-gradient(135deg, #dcfce7, #e0f2fe, #fef3c7);
+      border-radius: 0 0 1.5rem 1.5rem;
+    }
+    .map-svg { width: 100%; height: 100%; padding: 1rem; }
+    .map-marker {
+      position: absolute; transform: translate(-50%, -100%);
+      background: none; font-size: 1.8rem; line-height: 1;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,.2));
+      transition: transform .2s;
+    }
+    .map-marker:hover, .map-marker.active { transform: translate(-50%, -100%) scale(1.15); }
+    .map-info {
+      border-top: 1px solid #d1fae5; padding: 1rem 1.25rem;
+    }
+    .course-card { padding: 1rem; margin-bottom: .75rem; }
+    .course-steps {
+      display: flex; flex-wrap: wrap; align-items: center; gap: .25rem;
+      font-size: .75rem; margin-top: .5rem;
+    }
+    .course-step {
+      background: #ecfdf5; padding: .35rem .6rem;
+      border-radius: .75rem; font-weight: 500;
+    }
+    .course-arrow { color: #4ade80; font-size: .7rem; }
+
+    /* Tourism & coupons */
+    .grid-2 { display: grid; gap: 1rem; }
+    @media (min-width: 640px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+    .tourism-card { overflow: hidden; }
+    .tourism-bar { height: 4px; background: linear-gradient(90deg, #4ade80, #14b8a6); }
+    .tourism-body { padding: 1.25rem; }
+    .coupon-card {
+      display: flex; gap: 1rem; padding: 1.25rem;
+      border-left: 4px solid var(--green);
+    }
+    .qr {
+      width: 5rem; height: 5rem; flex-shrink: 0;
+      display: grid; grid-template-columns: repeat(8, 1fr);
+      gap: 1px; padding: 6px;
+      border: 2px solid #e5e7eb; border-radius: .75rem; background: #fff;
+    }
+    .qr div { border-radius: 1px; }
+    .qr .b { background: #111; }
+    .qr .w { background: #fff; }
+
+    /* Modal */
+    .overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,.45); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 1rem;
+    }
+    .modal {
+      background: #fff; border-radius: 1.5rem;
+      padding: 1.5rem; max-width: 32rem; width: 100%;
+      max-height: 90vh; overflow-y: auto;
+      box-shadow: 0 25px 60px rgba(0,0,0,.2);
+      position: relative;
+    }
+    .modal-close {
+      position: absolute; top: 1rem; right: 1rem;
+      width: 2rem; height: 2rem; border-radius: 50%;
+      background: #f3f4f6; font-size: 1.1rem;
+    }
+    .modal h3 { font-size: 1.2rem; font-weight: 800; text-align: center; }
+    .modal p { text-align: center; color: #6b7280; margin-top: .5rem; }
+    .modal-icon {
+      width: 4rem; height: 4rem; border-radius: 50%;
+      background: #dcfce7; margin: 0 auto 1rem;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+    }
+
+    /* Camera */
+    .cam-box {
+      position: relative; aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #14532d, #166534);
+      border-radius: 1rem; border: 4px solid #1f2937;
+      overflow: hidden; margin: 1rem 0;
+    }
+    .cam-live {
+      position: absolute; top: .75rem; left: .75rem;
+      background: #dc2626; color: #fff; font-size: .7rem; font-weight: 800;
+      padding: .2rem .5rem; border-radius: .4rem;
+      display: flex; align-items: center; gap: .3rem;
+    }
+    .cam-dot {
+      width: 6px; height: 6px; background: #fff; border-radius: 50%;
+      animation: blink 1.2s infinite;
+    }
+    @keyframes blink { 50% { opacity: .3; } }
+    .cam-scene {
+      position: absolute; inset: 0;
+      display: flex; flex-wrap: wrap; align-content: flex-end;
+      justify-content: center; gap: 1rem; padding: 2rem;
+    }
+    .strawberry { font-size: 2rem; }
+    .cam-status {
+      text-align: center; background: #ecfdf5;
+      padding: .75rem; border-radius: 1rem;
+      font-size: .85rem; font-weight: 600; color: #166534;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+      z-index: 300; background: #fff; border: 1px solid #bbf7d0;
+      padding: .9rem 1.25rem; border-radius: 1rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,.15);
+      display: flex; align-items: center; gap: .5rem;
+      font-size: .9rem; font-weight: 600;
+      animation: slideUp .3s ease;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translate(-50%, 20px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+
+    .banner-green {
+      background: linear-gradient(90deg, #16a34a, #0d9488);
+      color: #fff; text-align: center;
+      padding: 1rem 1.5rem; border-radius: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .flow-banner {
+      background: linear-gradient(90deg, #16a34a, #0d9488);
+      color: #fff; text-align: center; padding: 2rem 1rem;
+    }
+    footer {
+      text-align: center; padding: 1.5rem;
+      font-size: .8rem; color: #9ca3af;
+      border-top: 1px solid #d1fae5; background: #fff;
+    }
+    .back-link {
+      display: inline-flex; align-items: center; gap: .3rem;
+      font-size: .85rem; font-weight: 600; color: #166534;
+      margin-bottom: .5rem;
+    }
+    .back-link:hover { text-decoration: underline; }
+    .coupon-count {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: .75rem 1rem; margin-bottom: 1rem;
+    }
+    .coupon-count strong { font-size: 1.5rem; color: #166534; }
+  </style>
+</head>
+<body>
+
+<!-- ========== HEADER ========== -->
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo" onclick="showPage('home'); return false;">
+      <div class="logo-icon">🌿</div>
+      <div>
+        <h1>팜로컬</h1>
+        <p>스마트팜 체험하고, 지역까지 즐기는 주말 로컬 플랫폼</p>
+      </div>
+    </a>
+    <div class="header-tag">🌱 스마트팜 → 지역 관광 → 지역 소비</div>
+  </div>
+</header>
+
+<!-- ========== HOME PAGE ========== -->
+<div id="page-home">
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="hero-tag">🌿 스마트팜 체험하고, 지역까지 즐기는 주말 로컬 플랫폼</div>
+        <h2>스마트팜 체험하러 가고,<br><span>지역 혜택</span>까지 받아보세요</h2>
+        <p class="hero-desc">내가 고른 지역 농산물을 직접 키우고, 수확하고, 체험 후 지역 축제·카페·관광 할인권까지 받을 수 있는 로컬 체험 플랫폼</p>
+        <p class="hero-note">스마트팜 체험이 지역 여행으로 이어집니다.</p>
+        <div style="margin-top:1.5rem">
+          <button class="btn btn-primary btn-xl" onclick="showPage('service')">
+            작물 재배하러 가기 →
+          </button>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-panel">
+          <div class="hero-live">
+            <span style="font-size:1.5rem">🌱</span>
+            <div>
+              <div style="font-size:.7rem;opacity:.9">스마트팜</div>
+              <div style="font-weight:700">논산 딸기 재배 중</div>
+            </div>
+            <span style="margin-left:auto;font-size:.7rem;background:rgba(255,255,255,.2);padding:.2rem .5rem;border-radius:999px">● LIVE</span>
+          </div>
+          <div class="hero-mini">📷 실시간 모니터링<div style="height:3rem;background:linear-gradient(135deg,#14532d,#22c55e);border-radius:.5rem;margin-top:.4rem"></div></div>
+          <div class="hero-mini">📍 충남 지도<div style="height:3rem;background:#dcfce7;border-radius:.5rem;margin-top:.4rem;display:flex;align-items:center;justify-content:center">🗺️</div></div>
+          <div class="hero-mini">📡 온도 23.5℃ · 습도 61%</div>
+          <div class="hero-mini" style="background:#fffbeb">🎫 지역 쿠폰 3장</div>
+        </div>
+        <div class="hero-float hf1">🍓</div>
+        <div class="hero-float hf2">🌾</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="vote-box">
+      <span class="vote-label">공모전 투표</span>
+      <h3>❤️ 여러분이라면 이런 체험 해보고 싶나요?</h3>
+      <p>스마트팜에서 내가 고른 농산물을 키우고, 직접 수확하고, 지역 축제·카페 할인권까지 받는다면?</p>
+      <div class="vote-grid" id="vote-home"></div>
+    </div>
+  </div>
+
+  <section style="background:#fff;padding:3rem 0">
+    <div class="container">
+      <h3 style="text-align:center;font-size:1.5rem;font-weight:800">서비스 이용 흐름</h3>
+      <p style="text-align:center;color:#6b7280;margin-top:.4rem">스마트팜 체험부터 지역 관광·소비까지 한 번에</p>
+      <div class="flow-grid" style="margin-top:2rem" id="flow-cards"></div>
+      <div style="text-align:center;margin-top:2rem">
+        <button class="btn btn-primary btn-lg" onclick="showPage('service')">지금 시작하기 →</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="flow-banner">
+    <p style="font-size:1.1rem;font-weight:700">스마트팜 체험 → 지역 관광 → 지역 소비</p>
+    <p style="font-size:.85rem;opacity:.9;margin-top:.3rem">팜로컬과 함께 주말 로컬 여행을 떠나보세요</p>
+  </div>
+</div>
+
+<!-- ========== SERVICE PAGE ========== -->
+<div id="page-service" class="hidden">
+  <nav class="svc-nav">
+    <div class="svc-nav-inner" id="svc-nav"></div>
+  </nav>
+
+  <main class="container" style="padding-bottom:2rem">
+    <div style="padding:1.25rem 0;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1rem">
+      <div>
+        <a href="#" class="back-link" onclick="showPage('home'); return false;">← 홈으로</a>
+        <h2 style="font-size:1.5rem;font-weight:800">🌱 팜로컬 체험 서비스</h2>
+        <p style="font-size:.85rem;color:#6b7280">스마트팜 체험하고, 지역까지 즐기는 주말 로컬 플랫폼</p>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="scrollTo('farms')">농장 신청하기</button>
+    </div>
+
+    <div class="vote-box" style="margin-bottom:2rem">
+      <span class="vote-label">공모전 투표</span>
+      <h3>❤️ 여러분이라면 이런 체험 해보고 싶나요?</h3>
+      <p>스마트팜에서 내가 고른 농산물을 키우고, 직접 수확하고, 지역 축제·카페 할인권까지 받는다면?</p>
+      <div class="vote-grid" id="vote-service"></div>
+    </div>
+
+    <!-- STATUS -->
+    <section class="section" id="status">
+      <h3 class="section-title">현재 상태 확인</h3>
+      <p class="section-sub">내 작물의 상태를 실시간으로 확인하세요.</p>
+      <div class="card" style="margin-top:1.5rem;overflow:hidden">
+        <div class="status-header">
+          <span class="badge" style="background:rgba(255,255,255,.2);color:#fff;margin-bottom:.5rem">재배 중</span>
+          <h4 style="font-size:1.4rem;font-weight:800">논산 딸기</h4>
+          <p style="font-size:.85rem;opacity:.9;margin-top:.3rem">📍 충남 논산 · 논산 스마트 딸기팜</p>
+        </div>
+        <div class="status-body">
+          <div style="display:flex;align-items:center;gap:.75rem;background:#ecfdf5;padding:1rem;border-radius:1rem;margin-bottom:1.25rem">
+            <span style="font-size:2rem">🌱</span>
+            <div>
+              <div style="font-size:.75rem;color:#6b7280">성장 단계</div>
+              <strong>개화 후 열매 성장 단계</strong>
+            </div>
+          </div>
+          <div class="gauge">
+            <div class="gauge-head"><span>🌡️ 온도</span><strong style="color:#ea580c">23.5℃</strong></div>
+            <div class="gauge-bar"><div class="gauge-fill orange" style="width:59%"></div></div>
+          </div>
+          <div class="gauge">
+            <div class="gauge-head"><span>💧 습도</span><strong style="color:#2563eb">61%</strong></div>
+            <div class="gauge-bar"><div class="gauge-fill blue" style="width:61%"></div></div>
+          </div>
+          <div class="gauge">
+            <div class="gauge-head"><span>🌳 토양 수분</span><strong style="color:#b45309">48%</strong></div>
+            <div class="gauge-bar"><div class="gauge-fill amber" style="width:48%"></div></div>
+          </div>
+          <div class="stat-grid" style="margin:1.25rem 0">
+            <div class="info-pair"><label>📅 다음 방문 추천일</label><strong>이번 주 토요일</strong></div>
+            <div class="info-pair"><label>📅 수확 예상일</label><strong>2026년 6월 15일</strong></div>
+          </div>
+          <button class="btn btn-primary btn-lg" style="width:100%" onclick="openModal('camera')">📷 실시간 카메라 보기</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- FARMS -->
+    <section class="section" id="farms">
+      <h3 class="section-title">신청 가능한 곳</h3>
+      <p class="section-sub">원하는 지역의 스마트팜을 선택하고 체험을 신청하세요.</p>
+      <div class="farm-grid" style="margin-top:1.5rem" id="farm-list"></div>
+    </section>
+
+    <!-- MAP -->
+    <section class="section" id="map">
+      <h3 class="section-title">지도 보기</h3>
+      <p class="section-sub">농장 위치와 주변 관광 코스를 한눈에 확인하세요.</p>
+      <div class="map-wrap" style="margin-top:1.5rem">
+        <div class="card" style="padding:0;overflow:hidden">
+          <div style="padding:1rem 1.25rem;border-bottom:1px solid #d1fae5;background:#ecfdf5;font-weight:700">🧭 충청남도 스마트팜 지도</div>
+          <div class="map-area" id="map-area">
+            <svg class="map-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+              <path d="M15 25 L45 15 L75 20 L88 45 L82 75 L55 88 L25 82 L12 55 Z" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.2" opacity=".8"/>
+              <text x="50" y="10" text-anchor="middle" fill="#166534" font-size="5" font-weight="bold">충청남도</text>
+            </svg>
+          </div>
+          <div class="map-info" id="map-info"></div>
+        </div>
+        <div>
+          <h4 style="font-weight:800;margin-bottom:.75rem">지역별 추천 코스</h4>
+          <div id="course-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOURISM -->
+    <section class="section" id="tourism">
+      <h3 class="section-title">지역 관광/축제</h3>
+      <p class="section-sub">체험 후 지역 혜택까지 받아보세요.</p>
+      <div class="banner-green">
+        <p style="font-size:.85rem;opacity:.9">체험 후 연계 혜택</p>
+        <p style="font-weight:700;margin-top:.2rem">스마트팜 체험 → 지역 축제 · 관광 · 로컬 소비</p>
+      </div>
+      <div class="grid-2" id="tourism-list"></div>
+    </section>
+
+    <!-- COUPONS -->
+    <section class="section" id="coupons">
+      <h3 class="section-title">내 쿠폰함</h3>
+      <p class="section-sub">받은 쿠폰으로 지역 축제, 카페, 관광지를 즐겨보세요.</p>
+      <div class="card coupon-count">
+        <span style="color:#6b7280;font-size:.9rem">보유 쿠폰</span>
+        <strong id="coupon-count">6</strong><span style="color:#6b7280">장</span>
+      </div>
+      <div id="coupon-list"></div>
+    </section>
+  </main>
+</div>
+
+<footer>© 2026 팜로컬 · 공모전 시제품 프로토타입 · HTML 파일 더블클릭으로 실행</footer>
+
+<!-- MODALS -->
+<div id="modal-overlay" class="overlay hidden" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<div id="toast" class="toast hidden">✅ <span id="toast-msg"></span></div>
+
+<script>
+const VOTE_OPTS = [
+  { id:'yes', label:'해보고 싶다', emoji:'👍' },
+  { id:'friends', label:'친구랑 가보고 싶다', emoji:'👫' },
+  { id:'family', label:'가족이랑 가보고 싶다', emoji:'👨‍👩‍👧' },
+  { id:'no', label:'별로다', emoji:'🤔' },
+];
+
+const FLOW = [
+  { step:1, title:'지역 스마트팜 선택', desc:'충남 지역 스마트 농장을 골라보세요', icon:'📍' },
+  { step:2, title:'로컬 농산물 재배 체험 신청', desc:'원하는 작물 체험을 신청하세요', icon:'🌱' },
+  { step:3, title:'웹사이트에서 작물 상태 확인', desc:'온습도·성장 단계를 실시간 모니터링', icon:'🖥️' },
+  { step:4, title:'직접 방문해 수확·체험', desc:'농장 방문 후 수확 체험을 즐기세요', icon:'🤝' },
+  { step:5, title:'지역 쿠폰 받고 관광·소비', desc:'축제·카페·관광 할인권으로 지역 소비', icon:'🎫' },
+];
+
+const NAV = [
+  { id:'status', label:'현재 상태 확인' },
+  { id:'farms', label:'신청 가능한 곳' },
+  { id:'map', label:'지도 보기' },
+  { id:'tourism', label:'지역 관광/축제' },
+  { id:'coupons', label:'내 쿠폰함' },
+];
+
+const FARMS = [
+  { id:'nonsan', emoji:'🍓', region:'충남 논산', name:'논산 스마트 딸기팜', crop:'딸기',
+    exp:'딸기 생육 관찰, 수확 체험, 스마트팜 온습도 관리 체험',
+    benefits:'논산 딸기축제 할인권, 논산 지역화폐 3,000원',
+    status:'available', statusLabel:'신청 가능', price:15000,
+    mapX:62, mapY:38, nearby:'논산 딸기축제, 지역 카페, 로컬푸드 매장' },
+  { id:'gongju', emoji:'🌰', region:'충남 공주', name:'공주 알밤 스마트팜', crop:'밤',
+    exp:'밤 재배 체험, 알밤 가공 체험, 지역 관광 연계',
+    benefits:'알밤 가공 체험권, 공주 관광지 할인권',
+    status:'available', statusLabel:'신청 가능', price:12000,
+    mapX:28, mapY:52, nearby:'알밤 가공 체험, 공주 관광지, 지역 음식점' },
+  { id:'asan', emoji:'🥬', region:'충남 아산', name:'아산 로컬 채소팜', crop:'상추, 쪽파, 로컬 채소',
+    exp:'채소 재배, 수확 체험, 외암민속마을 연계 관광',
+    benefits:'외암민속마을 할인권, 지역 카페 쿠폰',
+    status:'available', statusLabel:'신청 가능', price:10000,
+    mapX:48, mapY:22, nearby:'외암민속마을, 지역 카페, 로컬푸드 직매장' },
+  { id:'buyeo', emoji:'🍅', region:'충남 부여', name:'부여 토마토 스마트팜', crop:'토마토',
+    exp:'토마토 생육 확인, 수확 체험, 로컬푸드 구매 연계',
+    benefits:'로컬푸드 구매권, 부여 관광지 할인권',
+    status:'closing', statusLabel:'마감 임박', price:13000,
+    mapX:35, mapY:68, nearby:'로컬푸드 직매장, 부여 관광지, 지역 음식점' },
+];
+
+const COURSES = [
+  { region:'논산', steps:['논산 스마트 딸기팜','논산 딸기축제','지역 카페','로컬푸드 매장'] },
+  { region:'아산', steps:['아산 로컬 채소팜','외암민속마을','지역 카페','로컬푸드 직매장'] },
+  { region:'공주', steps:['공주 알밤 스마트팜','알밤 가공 체험','공주 관광지','지역 음식점'] },
+  { region:'부여', steps:['부여 토마토 스마트팜','로컬푸드 직매장','부여 관광지','지역 음식점'] },
+];
+
+const TOURISM = [
+  { id:'nonsan-festival', region:'논산', emoji:'🍓', name:'논산 딸기축제',
+    desc:'논산 딸기 체험 후 방문하기 좋은 지역 대표 축제', benefit:'입장/체험 할인권',
+    farm:'논산 스마트 딸기팜', couponId:'coupon-nonsan-festival', couponName:'논산 딸기축제 할인권' },
+  { id:'oeam', region:'아산', emoji:'🏘️', name:'외암민속마을',
+    desc:'아산 로컬 채소팜 체험 후 방문 가능한 전통마을 관광지', benefit:'관람 할인권',
+    farm:'아산 로컬 채소팜', couponId:'coupon-oeam', couponName:'외암민속마을 관람 할인권' },
+  { id:'gongju', region:'공주', emoji:'🌰', name:'공주 알밤 가공 체험',
+    desc:'공주 밤 체험 후 즐길 수 있는 지역 가공 체험 프로그램', benefit:'체험권 할인',
+    farm:'공주 알밤 스마트팜', couponId:'coupon-gongju-chestnut', couponName:'공주 알밤 가공 체험권' },
+  { id:'buyeo', region:'부여', emoji:'🍅', name:'부여 로컬푸드 직매장',
+    desc:'부여 토마토 체험 후 지역 농산물을 구매할 수 있는 로컬푸드 매장', benefit:'로컬푸드 구매권',
+    farm:'부여 토마토 스마트팜', couponId:'coupon-buyeo-localfood', couponName:'부여 로컬푸드 구매권' },
+];
+
+const COUPONS = [
+  { id:'coupon-nonsan-festival', name:'논산 딸기축제 할인권', region:'충남 논산', farm:'논산 스마트 딸기팜', expiry:'2026.12.31' },
+  { id:'coupon-nonsan-money', name:'논산 지역화폐 3,000원', region:'충남 논산', farm:'논산 스마트 딸기팜', expiry:'2026.08.31' },
+  { id:'coupon-oeam', name:'외암민속마을 관람 할인권', region:'충남 아산', farm:'아산 로컬 채소팜', expiry:'2026.10.31' },
+  { id:'coupon-asan-cafe', name:'아산 지역 카페 10% 할인권', region:'충남 아산', farm:'아산 로컬 채소팜', expiry:'2026.09.30' },
+  { id:'coupon-gongju-chestnut', name:'공주 알밤 가공 체험권', region:'충남 공주', farm:'공주 알밤 스마트팜', expiry:'2026.11.30' },
+  { id:'coupon-buyeo-localfood', name:'부여 로컬푸드 구매권', region:'충남 부여', farm:'부여 토마토 스마트팜', expiry:'2026.12.15' },
+];
+
+let appliedFarms = new Set(['nonsan']);
+let collectedCoupons = new Set(COUPONS.map(c => c.id));
+let selectedMapFarm = FARMS[0];
+let toastTimer;
+
+function showPage(page) {
+  document.getElementById('page-home').classList.toggle('hidden', page !== 'home');
+  document.getElementById('page-service').classList.toggle('hidden', page !== 'service');
+  window.scrollTo(0, 0);
+  if (page === 'service') renderFarms();
+}
+
+function scrollTo(id) {
+  document.getElementById(id)?.scrollIntoView({ behavior:'smooth' });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.remove('hidden');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.add('hidden'), 3000);
+}
+
+function openModal(type, data) {
+  const overlay = document.getElementById('modal-overlay');
+  const content = document.getElementById('modal-content');
+  overlay.classList.remove('hidden');
+
+  if (type === 'camera') {
+    const time = new Date().toLocaleTimeString('ko-KR');
+    content.innerHTML = `
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <h3 style="margin-bottom:.5rem">논산 딸기 스마트팜 실시간 화면</h3>
+      <div class="cam-box">
+        <div class="cam-live"><span class="cam-dot"></span> LIVE</div>
+        <div class="cam-scene">
+          ${'🍓'.repeat(12).split('').map(s=>`<span class="strawberry">${s}</span>`).join('')}
+        </div>
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.8));padding:1rem;color:#ccc;font-size:.7rem;font-family:monospace">
+          CAM-01 · 1920×1080 · ${time}
+        </div>
+      </div>
+      <div class="cam-status">📶 현재 카메라 연결 상태: 정상</div>
+      <button class="btn btn-primary btn-lg" style="width:100%;margin-top:1rem" onclick="closeModal()">닫기</button>`;
+  } else if (type === 'apply') {
+    content.innerHTML = `
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <div class="modal-icon">✅</div>
+      <h3>신청이 완료되었습니다!</h3>
+      <p>이제 내 작물의 상태를 웹사이트에서 확인할 수 있습니다.</p>
+      <p style="color:#166534;font-weight:600;margin-top:.5rem">${data.name}</p>
+      <button class="btn btn-primary btn-lg" style="width:100%;margin-top:1.25rem" onclick="closeModal()">확인</button>`;
+  } else if (type === 'use-coupon') {
+    content.innerHTML = `
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <div style="width:6rem;height:6rem;margin:0 auto 1rem;border:4px dashed #d1d5db;border-radius:1rem;display:flex;align-items:center;justify-content:center;font-size:2.5rem">📱</div>
+      <h3>쿠폰 사용 화면입니다.<br>현장에서 QR을 제시해주세요.</h3>
+      <p style="color:#166534;font-weight:600">${data.name}</p>
+      <button class="btn btn-primary btn-lg" style="width:100%;margin-top:1.25rem" onclick="closeModal()">확인</button>`;
+  }
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.add('hidden');
+}
+
+function renderVote(containerId) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = VOTE_OPTS.map(o => `
+    <button class="vote-opt" data-id="${o.id}" onclick="selectVote(this,'${containerId}')">
+      <span>${o.emoji}</span><p>${o.label}</p>
+    </button>`).join('');
+}
+
+function selectVote(btn, containerId) {
+  document.querySelectorAll(`#${containerId} .vote-opt`).forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function renderFlow() {
+  document.getElementById('flow-cards').innerHTML = FLOW.map(f => `
+    <div class="card flow-card">
+      <span class="flow-num">${f.step}</span>
+      <div style="font-size:1.5rem">${f.icon}</div>
+      <h4>${f.title}</h4><p>${f.desc}</p>
+    </div>`).join('');
+}
+
+function renderNav() {
+  document.getElementById('svc-nav').innerHTML = NAV.map(n => `
+    <button class="nav-btn" onclick="scrollTo('${n.id}')">${n.label}</button>`).join('');
+}
+
+function renderFarms() {
+  document.getElementById('farm-list').innerHTML = FARMS.map(f => {
+    const applied = appliedFarms.has(f.id);
+    const badge = applied
+      ? '<span class="badge badge-done">✓ 신청 완료</span>'
+      : `<span class="badge ${f.status==='closing'?'badge-warn':''}">${f.statusLabel}</span>`;
+    return `
+    <div class="card farm-card" id="farm-${f.id}" style="${applied?'outline:2px solid #22c55e':''}">
+      <div class="farm-card-head">
+        <div style="display:flex;gap:.75rem;align-items:flex-start">
+          <span style="font-size:2rem">${f.emoji}</span>
+          <div><strong style="font-size:1rem">${f.name}</strong><br><span style="font-size:.8rem;color:#6b7280">📍 ${f.region}</span></div>
+        </div>
+        ${badge}
+      </div>
+      <div class="farm-card-body">
+        <p style="font-size:.85rem"><strong>대표 작물:</strong> ${f.crop}</p>
+        <p style="font-size:.85rem;margin-top:.4rem;color:#4b5563"><strong>체험 내용:</strong> ${f.exp}</p>
+        <div class="farm-benefit">🎁 <strong>제공 혜택:</strong> ${f.benefits}</div>
+        <div class="farm-footer">
+          <div><span style="font-size:.8rem;color:#6b7280">예상 체험료</span><br><span class="price">${f.price.toLocaleString()}원</span></div>
+          <button class="btn ${applied?'btn-secondary':'btn-primary'} btn-lg"
+            ${applied?'disabled':''}
+            onclick="applyFarm('${f.id}')">${applied?'신청 완료':'신청하기'}</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function applyFarm(id) {
+  appliedFarms.add(id);
+  const farm = FARMS.find(f => f.id === id);
+  renderFarms();
+  openModal('apply', farm);
+}
+
+function renderMap() {
+  const area = document.getElementById('map-area');
+  area.querySelectorAll('.map-marker').forEach(m => m.remove());
+  FARMS.forEach(f => {
+    const btn = document.createElement('button');
+    btn.className = 'map-marker' + (f.id === selectedMapFarm.id ? ' active' : '');
+    btn.innerHTML = '📍';
+    btn.style.left = f.mapX + '%';
+    btn.style.top = f.mapY + '%';
+    btn.title = f.name;
+    btn.onclick = () => { selectedMapFarm = f; renderMap(); };
+    area.appendChild(btn);
+  });
+  document.getElementById('map-info').innerHTML = `
+    <strong>${selectedMapFarm.name}</strong>
+    <p style="font-size:.85rem;color:#6b7280;margin-top:.2rem">대표 작물: ${selectedMapFarm.crop}</p>
+    <span class="badge ${selectedMapFarm.status==='closing'?'badge-warn':''}" style="margin-top:.4rem">${selectedMapFarm.statusLabel}</span>
+    <p style="font-size:.85rem;margin-top:.5rem"><strong style="color:#166534">주변 관광/축제:</strong> ${selectedMapFarm.nearby}</p>`;
+}
+
+function renderCourses() {
+  document.getElementById('course-list').innerHTML = COURSES.map(c => `
+    <div class="card course-card">
+      <strong style="color:#166534">${c.region} 코스</strong>
+      <div class="course-steps">
+        ${c.steps.map((s,i) => `
+          <span class="course-step">${s}</span>
+          ${i < c.steps.length-1 ? '<span class="course-arrow">→</span>' : ''}
+        `).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function renderTourism() {
+  document.getElementById('tourism-list').innerHTML = TOURISM.map(t => {
+    const has = collectedCoupons.has(t.couponId);
+    return `
+    <div class="card tourism-card">
+      <div class="tourism-bar"></div>
+      <div class="tourism-body">
+        <span class="badge">${t.region}</span>
+        <h4 style="font-size:1rem;font-weight:800;margin:.4rem 0">${t.emoji} ${t.name}</h4>
+        <p style="font-size:.85rem;color:#6b7280">${t.desc}</p>
+        <p style="font-size:.85rem;background:#ecfdf5;padding:.6rem;border-radius:.75rem;margin:.6rem 0"><strong style="color:#166534">제공 혜택:</strong> ${t.benefit}</p>
+        <p style="font-size:.75rem;color:#9ca3af">📍 연결 농장: ${t.farm}</p>
+        <button class="btn ${has?'btn-secondary':'btn-primary'} btn-lg" style="width:100%;margin-top:.75rem"
+          onclick="collectCoupon('${t.couponId}','${t.couponName}')">${has?'쿠폰 보유 중':'🎫 쿠폰 받기'}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function collectCoupon(id, name) {
+  const was = collectedCoupons.has(id);
+  collectedCoupons.add(id);
+  showToast(was ? `${name}은(는) 이미 쿠폰함에 있습니다.` : '쿠폰이 내 쿠폰함에 저장되었습니다.');
+  renderTourism();
+  renderCoupons();
+}
+
+function makeQr(seed) {
+  let html = '';
+  for (let i = 0; i < 64; i++) {
+    const filled = ((seed.charCodeAt(i % seed.length) + i * 7) % 3) !== 0;
+    html += `<div class="${filled?'b':'w'}"></div>`;
+  }
+  return html;
+}
+
+function renderCoupons() {
+  const list = COUPONS.filter(c => collectedCoupons.has(c.id));
+  document.getElementById('coupon-count').textContent = list.length;
+  document.getElementById('coupon-list').innerHTML = list.map(c => `
+    <div class="card coupon-card" style="margin-bottom:.75rem">
+      <div class="qr">${makeQr(c.id)}</div>
+      <div>
+        <strong style="font-size:.95rem">${c.name}</strong>
+        <p style="font-size:.75rem;color:#6b7280;margin-top:.2rem">📍 ${c.region}</p>
+        <p style="font-size:.75rem;color:#6b7280">🏡 ${c.farm}</p>
+        <p style="font-size:.75rem;color:#b45309;font-weight:600">📅 사용 기한: ${c.expiry}</p>
+        <button class="btn btn-primary btn-sm" style="margin-top:.5rem" onclick="openModal('use-coupon',{name:'${c.name.replace(/'/g,"\\'")}'})">📱 사용하기</button>
+      </div>
+    </div>`).join('');
+}
+
+// Init
+renderVote('vote-home');
+renderVote('vote-service');
+renderFlow();
+renderNav();
+renderFarms();
+renderMap();
+renderCourses();
+renderTourism();
+renderCoupons();
+</script>
+</body>
+</html>
